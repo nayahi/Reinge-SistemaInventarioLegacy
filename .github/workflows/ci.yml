@@ -153,3 +153,16 @@ jobs:
             /d:sonar.token="$SONAR_TOKEN"
           dotnet build -c Release
           dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
+
+      # -----------------------------------------------------------------------
+      # Semana 9 - Parte 1: hace que el pipeline BLOQUEE de verdad si el
+      # Quality Gate personalizado (Reingenieria-SistemaInventarioLegacy) queda
+      # en rojo. Lee el report-task.txt generado por el scanner (paso anterior)
+      # y consulta el estado real del gate en SonarCloud.
+      # -----------------------------------------------------------------------
+      - name: Verificar Quality Gate de SonarCloud
+        if: ${{ secrets.SONAR_TOKEN != '' }}
+        uses: SonarSource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
